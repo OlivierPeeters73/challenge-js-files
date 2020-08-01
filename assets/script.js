@@ -62,6 +62,7 @@ function randomColor() {
 
 console.log(randomColor());
 
+//CREATION DU CHART POUR TABLE1
 
 let myChart1 = new Chart(canvas1, {
     // The type of chart we want to create
@@ -253,7 +254,7 @@ let myChart1 = new Chart(canvas1, {
     options: {
       title: {
         display: true,
-        text: 'World population per region (in millions)'
+        text: 'Offences recorded by the police, 2002-12'
       }
     }
 });
@@ -261,29 +262,148 @@ let myChart1 = new Chart(canvas1, {
 
 
 
+
 // CHART DE TABLE2
 // CREATION DU CANVAS ET PLACEMENT DU CANVAS AVANT TABLE2
 
-document.getElementById("table2").insertAdjacentHTML("beforebegin", '<canvas id="canvas2" height="400" width="400"></canvas>');
+document.getElementById("table2").insertAdjacentHTML("beforebegin", '<canvas id="canvas2" height="200" width="400"></canvas>');
 let canvas2 = document.getElementById ("canvas2");
+
 
 // EXTRACTION DONNEES DU TABLE2
 
-
 let tab2 = document.getElementById("table2");
 
-function tableToJson(table) {
-    let data = [];
-    for (i = 1; i < table.rows.length; i++) {
-        let tableRow = table.rows[i];
-        let rowData = [];
-        for (j = 1; j < tableRow.cells.length; j++) {
-            rowData.push(tableRow.cells[j].innerHTML);;
-        }
-        data.push(rowData);
-    }
-    return data;
-}
 tab2 = tableToJson(tab2);
 
 console.log(tab2);
+
+//CREATION DU CHART POUR TABLE2
+
+let myChart2 = new Chart(canvas2, {
+  type: 'bar',
+  data: {
+    labels: tableAllZero(tab2),
+    datasets: [
+      {
+        label: "2007–09",
+        backgroundColor: "#3e95cd",
+        data: tableAllOne(tab2)
+      }, {
+        label: "2010–12",
+        backgroundColor: "#8e5ea2",
+        data: tableAllTwo(tab2)
+      }
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'Prison population, average per year, 2007-09 and 2010-12 (per 100,000 inhabitants)'
+    }
+  }
+});
+
+// 3 FONCTIONS POUR CRÉER DES ARRAYS AVEC UNIQUEMENT INDEX 0, 1 OU 2 
+
+function tableAllZero(arr) {
+  let data = [];
+  for (i = 0; i < arr.length; i++) {
+    data[i] = arr[i][0];
+  }
+  data[7] = "England and Wales(UK)"
+  return data;
+}
+
+
+
+function tableAllOne(arr) {
+  let data = [];
+  for (i = 0; i < arr.length; i++) {
+      data[i] = arr[i][1];
+  }
+  return data;
+}
+
+
+
+function tableAllTwo(arr) {
+  let data = [];
+  for (i = 0; i < arr.length; i++) {
+      data[i] = arr[i][2];
+  }
+  return data;
+}
+
+console.log(tableAllZero(tab2));
+console.log(tableAllOne(tab2));
+console.log(tableAllTwo(tab2));
+
+
+
+// CHART REMOTE DATA IN REAL-TIME
+// CREATION DU CANVAS ET PLACEMENT DU CANVAS APRÈS LE TITRE PRINCIPAL h1
+
+document.getElementById("firstHeading").insertAdjacentHTML("afterend", '<canvas id="canvas3" height="200" width="400"></canvas>');
+let canvas3 = document.getElementById ("canvas3");
+
+
+
+
+// FETCH DATA FROM https://canvasjs.com/services/data/datapoints.php
+var dataPoints = [];
+
+  
+// Defining async function 
+async function getapi() { 
+    
+    const response = await fetch("https://canvasjs.com/services/data/datapoints.php");  // Storing response 
+    
+    var data = await response.json();                                                   // Storing data in form of JSON 
+    console.log(data);
+    return data;
+} 
+
+getapi();       // Calling that async function 
+
+//dataPoints = getapi();
+///////////////////
+
+
+
+//CREATION DU CHART3 (live)
+
+let myChart3 = new Chart(canvas3, {
+  type: 'line',
+  data: {
+    labels: [1500,1600,1700,1750,1800,1850,1900,1950,1999,2050],
+    datasets: [{ 
+        data: getValues(getapi()),
+        label: "Africa",
+        borderColor: "#3e95cd",
+        fill: false
+      }
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'World population per region (in millions)'
+    }
+  }
+});
+
+
+function getSeconds (arr){
+  for (i = 0; i < arr.length; i++) {
+    let data = [];
+    data[i] = arr[i][0];
+  }
+}
+
+function getValues (arr){
+  for (i = 0; i < arr.length; i++) {
+    let data = [];
+    data[i] = arr[i][1];
+  }
+}
